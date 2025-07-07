@@ -1,0 +1,21 @@
+name: Template Cleanup
+author: Spotify Proxy
+description: Clean up template repository after creation
+when: before
+steps:
+  - name: Cleanup
+    description: Remove template-specific files and update README
+    run: |
+      # Remove this template file
+      rm -f .github/template-cleanup.yml
+
+      # Update README with user's repository name
+      if [ -f README.md ]; then
+        sed -i "s|spotify-proxy|$GITHUB_REPOSITORY|g" README.md
+      fi
+
+      echo "✅ Template cleanup complete!"
+      echo "Next steps:"
+      echo "1. Go to Actions tab and run 'Manual Deploy' workflow"
+      echo "2. Enter your Cloudflare credentials"
+      echo "3. Visit your deployed worker URL to complete setup"

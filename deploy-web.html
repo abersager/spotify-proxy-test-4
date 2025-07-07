@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Spotify Proxy - Web Deploy</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #1db954;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+        .step {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #1db954;
+        }
+        .step-number {
+            display: inline-block;
+            background: #1db954;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .step-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1db954;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin: 20px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1db954;
+        }
+        .btn {
+            background: #1db954;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .btn:hover {
+            background: #1ed760;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .alert-info {
+            background: #cce7ff;
+            border: 1px solid #b3d9ff;
+            color: #004085;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1db954, #1ed760);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .code-block {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border: 1px solid #e9ecef;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .hidden {
+            display: none;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ffeaa7;
+            margin: 15px 0;
+        }
+        .link-button {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .link-button:hover {
+            background: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Spotify Proxy</h1>
+        <p class="subtitle">Deploy your personal Spotify API proxy from your forked repository</p>
+
+        <div class="alert alert-info">
+            <strong>📋 Prerequisites:</strong><br>
+            1. <strong>Fork this repository</strong> using the <a href="https://github.com/abersager/spotify-proxy/generate" target="_blank">"Use this template"</a> button<br>
+            2. <strong>Get your Cloudflare credentials</strong> (we'll help you below)<br>
+            3. <strong>Deploy to Cloudflare Workers</strong> with one click
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">1</span>
+                Enter Your Repository Details
+            </div>
+            <p>First, tell us about your forked repository:</p>
+
+            <div class="form-group">
+                <label for="repo-url">Your Repository URL:</label>
+                <input type="text" id="repo-url" placeholder="https://github.com/your-username/your-repo-name" oninput="validateRepositoryUrl()">
+                <div id="repo-status" class="alert" style="display: none; margin-top: 10px;"></div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 How to get your repository URL:</strong><br>
+                1. Go to <a href="https://github.com/abersager/spotify-proxy/generate" target="_blank">Create your repository</a> from template<br>
+                2. Copy the URL from your browser address bar<br>
+                3. Paste it above (e.g., <code>https://github.com/your-username/spotify-proxy</code>)
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">2</span>
+                Get Your Cloudflare Credentials
+            </div>
+            <p>Now let's get your Cloudflare API token and Account ID:</p>
+
+            <div id="token-instructions">
+                <p>First, you'll need to create a Cloudflare API token with the right permissions. Follow these exact steps:</p>
+
+                <div class="highlight">
+                    <strong>📋 Exact Setup Instructions:</strong><br>
+                    1. Click the button below to open Cloudflare's token page<br>
+                    2. Click "<strong>Create Token</strong>" → "<strong>Get started</strong>" (Custom token)<br>
+                    3. <strong>Token name:</strong> <code>spotify-proxy</code><br>
+                    4. <strong>Permissions:</strong><br>
+                       • Account → <strong>Workers Scripts</strong> → <strong>Edit</strong><br>
+                       • Account → <strong>Workers KV Storage</strong> → <strong>Edit</strong><br>
+                    5. <strong>Account Resources:</strong> Include All accounts<br>
+                    6. Click "<strong>Continue to summary</strong>" → "<strong>Create Token</strong>"<br>
+                    7. <strong>Copy the token</strong> and return here
+                </div>
+
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" class="btn" onclick="showTokenFields()">
+                        🔑 Create API Token
+                    </a>
+                </div>
+
+                <p style="text-align: center; color: #666; font-size: 14px;">
+                    This will open Cloudflare in a new tab and show the form fields below
+                </p>
+            </div>
+
+            <div id="token-form" style="display: none;">
+                <div class="alert alert-info">
+                    <strong>✅ Great!</strong> Follow the instructions above to create your token, then paste it below. We'll validate your credentials during deployment.
+                </div>
+
+                                <div class="form-group">
+                    <label for="api-token">Cloudflare API Token:</label>
+                    <input type="password" id="api-token" placeholder="Paste your API token here..." oninput="checkTokenInput()">
+                    <div id="token-status" class="alert" style="display: none; margin-top: 10px;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dashboard-url">Cloudflare Dashboard URL:</label>
+                    <input type="text" id="dashboard-url" placeholder="Paste your Cloudflare dashboard URL here..." oninput="parseAccountId()">
+                    <div id="url-status" class="alert alert-info" style="display: block; margin-top: 10px;">
+                        <strong>💡 Easy way to get your Account ID:</strong><br>
+                        1. Go to <a href="https://dash.cloudflare.com/" target="_blank">Cloudflare Dashboard</a><br>
+                        2. After login, copy the URL from your browser address bar<br>
+                        3. Paste it above and we'll extract your Account ID automatically<br>
+                        <br>
+                        <strong>Example URL:</strong> <code>https://dash.cloudflare.com/abc123.../home</code>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="account-id">Account ID:</label>
+                    <input type="text" id="account-id" placeholder="Will be extracted from URL above..." readonly>
+                    <div id="account-status" class="alert" style="display: none; margin-top: 10px;"></div>
+                </div>
+
+                <div style="text-align: center; margin: 20px 0;">
+                    <button type="button" class="btn btn-secondary" onclick="hideTokenFields()">
+                        ← Back to Instructions
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="showTokenHelp()">
+                        💡 Need Help?
+                    </button>
+                </div>
+
+                <div id="token-help" class="highlight" style="display: none;">
+                    <strong>🔧 Troubleshooting:</strong><br>
+                    • Make sure you selected <strong>both</strong> permissions: Workers Scripts + KV Storage<br>
+                    • Check that permission level is set to <strong>Edit</strong>, not Read<br>
+                    • Ensure "Account Resources" is set to <strong>Include All accounts</strong><br>
+                    • If token is invalid, create a new one with the correct settings<br><br>
+                    <a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" class="link-button">Create New Token</a>
+                </div>
+            </div>
+        </div>
+
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">3</span>
+                Deploy to Cloudflare
+            </div>
+            <p>Once you've entered your repository and credentials, deploy directly to Cloudflare Workers:</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <button type="button" class="btn deploy-button" onclick="window.open(generateDeployURL(), '_blank')" disabled>
+                    🚀 Deploy to Cloudflare Workers
+                </button>
+            </div>
+            <div class="alert alert-info">
+                <strong>Deployment process:</strong><br>
+                1. 🔐 Your credentials will be validated during deployment<br>
+                2. 🚀 One-click deployment to Cloudflare<br>
+                3. 📱 Automatic worker URL generation<br>
+                4. 🎵 Ready to use your Spotify proxy!
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">4</span>
+                Complete Setup
+            </div>
+            <p>After deployment:</p>
+            <ol>
+                <li>Visit your worker URL</li>
+                <li>Enter your Spotify app credentials</li>
+                <li>Complete OAuth authorization</li>
+                <li>Start using your proxy!</li>
+            </ol>
+        </div>
+
+        <div class="alert alert-success">
+            <strong>🎉 Fork-Based Deployment!</strong><br>
+            Deploy your own personal Spotify proxy directly from your forked repository to Cloudflare Workers.
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">?</span>
+                Need Help?
+            </div>
+            <p>If you run into any issues:</p>
+            <ul>
+                <li>Check that your Cloudflare credentials are correct</li>
+                <li>Ensure your worker name is unique</li>
+                <li>Visit the <a href="https://github.com/abersager/spotify-proxy" target="_blank">GitHub repository</a> for more help</li>
+            </ul>
+        </div>
+    </div>
+
+        <script>
+
+        let currentToken = '';
+        let currentAccountId = '';
+        let currentRepositoryUrl = '';
+        let validatedCredentials = false;
+        let validatedRepository = false;
+
+        function validateRepositoryUrl() {
+            const repoUrl = document.getElementById('repo-url').value.trim();
+
+            if (!repoUrl) {
+                hideStatus('repo-status');
+                currentRepositoryUrl = '';
+                validatedRepository = false;
+                updateDeployButton();
+                return;
+            }
+
+            // Validate GitHub repository URL format
+            const githubPattern = /^https:\/\/github\.com\/([^\/]+)\/([^\/]+)(?:\/)?$/;
+            const match = repoUrl.match(githubPattern);
+
+            if (match) {
+                const [, username, repoName] = match;
+                currentRepositoryUrl = `https://github.com/${username}/${repoName}`;
+                validatedRepository = true;
+                showStatus('repo-status', `✅ Repository: ${username}/${repoName}`, 'success');
+            } else {
+                validatedRepository = false;
+                currentRepositoryUrl = '';
+                showStatus('repo-status',
+                    '❌ Invalid repository URL. Please use format: https://github.com/username/repo-name',
+                    'error');
+            }
+
+            updateDeployButton();
+        }
+
+        function showTokenHelp() {
+            const helpDiv = document.getElementById('token-help');
+            const isVisible = helpDiv.style.display !== 'none';
+            helpDiv.style.display = isVisible ? 'none' : 'block';
+        }
+
+        function showTokenFields() {
+            // Keep instructions visible for reference
+            document.getElementById('token-instructions').style.display = 'block';
+            document.getElementById('token-form').style.display = 'block';
+            document.getElementById('api-token').focus();
+        }
+
+        function hideTokenFields() {
+            document.getElementById('token-instructions').style.display = 'block';
+            document.getElementById('token-form').style.display = 'none';
+            // Clear any existing validation
+            document.getElementById('repo-url').value = '';
+            document.getElementById('api-token').value = '';
+            document.getElementById('dashboard-url').value = '';
+            document.getElementById('account-id').value = '';
+            hideStatus('repo-status');
+            hideStatus('token-status');
+            hideStatus('account-status');
+            hideStatus('url-status');
+            document.getElementById('url-status').style.display = 'block';
+            document.getElementById('token-help').style.display = 'none';
+            validatedCredentials = false;
+            validatedRepository = false;
+            currentRepositoryUrl = '';
+            updateDeployButton();
+        }
+
+        // Note: Client-side validation removed due to CORS restrictions
+        // Validation will happen during the deployment process instead
+
+        function showStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.className = `alert alert-${type}`;
+            element.innerHTML = message;
+            element.style.display = 'block';
+        }
+
+        function hideStatus(elementId) {
+            document.getElementById(elementId).style.display = 'none';
+        }
+
+        function parseAccountId() {
+            const dashboardUrl = document.getElementById('dashboard-url').value.trim();
+
+            if (!dashboardUrl) {
+                document.getElementById('account-id').value = '';
+                hideStatus('account-status');
+                hideStatus('url-status');
+                document.getElementById('url-status').style.display = 'block';
+                checkTokenInput();
+                return;
+            }
+
+            // Extract Account ID from Cloudflare dashboard URL
+            // Pattern: https://dash.cloudflare.com/ACCOUNT_ID/...
+            const urlPattern = /https:\/\/dash\.cloudflare\.com\/([a-f0-9]{32})/i;
+            const match = dashboardUrl.match(urlPattern);
+
+            if (match && match[1]) {
+                const accountId = match[1];
+                document.getElementById('account-id').value = accountId;
+                showStatus('account-status', '✅ Account ID extracted successfully!', 'success');
+                hideStatus('url-status');
+                currentAccountId = accountId;
+            } else {
+                document.getElementById('account-id').value = '';
+                showStatus('account-status',
+                    '❌ Could not extract Account ID from URL. Make sure you paste the full URL from your Cloudflare dashboard (e.g., https://dash.cloudflare.com/abc123.../home)',
+                    'error');
+                currentAccountId = '';
+            }
+
+            checkTokenInput();
+        }
+
+        function checkTokenInput() {
+            const token = document.getElementById('api-token').value.trim();
+            const accountId = document.getElementById('account-id').value.trim();
+
+            if (token.length > 10) {
+                showStatus('token-status', '✅ Token format looks good!', 'success');
+                currentToken = token;
+            } else {
+                hideStatus('token-status');
+                currentToken = '';
+            }
+
+            if (accountId.length > 10) {
+                currentAccountId = accountId;
+            } else {
+                currentAccountId = '';
+            }
+
+            // Enable deploy button when repository, token, and account ID are all valid
+            validatedCredentials = (token.length > 10 && accountId.length > 10);
+            updateDeployButton();
+        }
+
+        function updateDeployButton() {
+            const deployButtons = document.querySelectorAll('.deploy-button');
+            const allValid = validatedRepository && validatedCredentials;
+
+            deployButtons.forEach(button => {
+                if (allValid) {
+                    button.disabled = false;
+                    button.textContent = '🚀 Deploy to Cloudflare Workers';
+                } else {
+                    button.disabled = true;
+                    button.textContent = '🚀 Deploy to Cloudflare Workers';
+                }
+            });
+        }
+
+        function generateDeployURL() {
+            if (!validatedRepository) {
+                alert('Please enter your repository URL first!');
+                return '#';
+            }
+
+            if (!validatedCredentials) {
+                alert('Please enter your Cloudflare credentials first!');
+                return '#';
+            }
+
+            // Generate the Cloudflare deploy URL with the user's repository
+            const deployURL = new URL('https://deploy.workers.cloudflare.com/');
+            deployURL.searchParams.set('url', currentRepositoryUrl);
+
+            return deployURL.toString();
+        }
+
+        // Setup event listeners when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Track download clicks
+            document.querySelectorAll('a[download]').forEach(link => {
+                link.addEventListener('click', function() {
+                    console.log('Downloaded:', this.getAttribute('download'));
+                });
+            });
+
+            // Initialize deploy button state
+            updateDeployButton();
+        });
+    </script>
+</body>
+</html>

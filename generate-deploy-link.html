@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Your Spotify Proxy Deploy Link</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1db954;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #1db954;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f5e8;
+            border-radius: 6px;
+            border: 1px solid #1db954;
+            display: none;
+        }
+        .result h3 {
+            color: #1db954;
+            margin-top: 0;
+        }
+        .deploy-link {
+            display: block;
+            background: #1db954;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            margin: 15px 0;
+            transition: background 0.2s;
+        }
+        .deploy-link:hover {
+            background: #1ed760;
+        }
+        .code-snippet {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid #e9ecef;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .copy-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .copy-button:hover {
+            background: #0056b3;
+        }
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Generate Your Deploy Link</h1>
+        <p>Enter your GitHub repository details to generate a direct deployment link:</p>
+
+        <div class="form-group">
+            <label for="username">GitHub Username:</label>
+            <input type="text" id="username" placeholder="e.g., abersager" oninput="generateLink()">
+        </div>
+
+        <div class="form-group">
+            <label for="repo">Repository Name:</label>
+            <input type="text" id="repo" placeholder="e.g., spotify-proxy-test" oninput="generateLink()">
+        </div>
+
+        <div class="note">
+            <strong>💡 How to find these:</strong><br>
+            Your GitHub repository URL looks like: <code>https://github.com/USERNAME/REPOSITORY</code><br>
+            • <strong>Username</strong>: The part after github.com/<br>
+            • <strong>Repository</strong>: The part after the username/
+        </div>
+
+        <div class="result" id="result">
+            <h3>🚀 Your Deploy Link:</h3>
+            <a href="#" id="deployLink" class="deploy-link" target="_blank">
+                Deploy to Cloudflare Workers →
+            </a>
+
+            <h4>📋 Copy for README:</h4>
+            <div class="code-snippet" id="markdownCode"></div>
+            <button class="copy-button" onclick="copyToClipboard('markdownCode')">Copy Markdown</button>
+
+            <h4>🔗 Direct URL:</h4>
+            <div class="code-snippet" id="directUrl"></div>
+            <button class="copy-button" onclick="copyToClipboard('directUrl')">Copy URL</button>
+        </div>
+    </div>
+
+    <script>
+        function generateLink() {
+            const username = document.getElementById('username').value.trim();
+            const repo = document.getElementById('repo').value.trim();
+
+            if (username && repo) {
+                const url = `https://github.com/${username}/${repo}/actions/workflows/manual-deploy.yml`;
+                const markdown = `🚀 **[Deploy Now - Run Manual Deploy Workflow](${url})**`;
+
+                document.getElementById('deployLink').href = url;
+                document.getElementById('markdownCode').textContent = markdown;
+                document.getElementById('directUrl').textContent = url;
+                document.getElementById('result').style.display = 'block';
+            } else {
+                document.getElementById('result').style.display = 'none';
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = '#28a745';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#007bff';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy to clipboard');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+name = "spotify-proxy-test-4"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "spotify-proxy"
+
+[env.development]
+name = "spotify-proxy-dev"
+
+# KV namespace for storing tokens and user data
+[[kv_namespaces]]
+binding = "SPOTIFY_DATA"
+id = "06a76e27eccf4ae4b69e77d0c55e9c51"
+preview_id = "d99f068858a5401cbf4463132959349e"
+
+# Environment variables (set these via wrangler secret put)
+[vars]
+ENVIRONMENT = "development"
+
+# For deployment, you'll need to set these secrets:
+# wrangler secret put SPOTIFY_CLIENT_ID
+# wrangler secret put SPOTIFY_CLIENT_SECRET
